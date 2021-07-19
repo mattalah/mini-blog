@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CommentDestroyRequest;
+use App\Http\Requests\CommentPostRequest;
+use App\Http\Requests\CommentStoreRequest;
 use App\Models\Comment;
 use Illuminate\Http\Request;
 
@@ -33,9 +36,10 @@ class CommentsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CommentStoreRequest $request)
     {
-        //
+        auth()->user()->comments(['comment' => $request->comment, 'post_id' => $request->post_id]);
+        return redirect()->route('blog');
     }
 
     /**
@@ -78,8 +82,9 @@ class CommentsController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Comment $comment)
+    public function destroy(CommentDestroyRequest $request, Comment $comment)
     {
-        //
+       $comment->delete();
+       return redirect()->route('blog');
     }
 }

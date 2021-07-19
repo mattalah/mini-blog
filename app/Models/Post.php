@@ -15,7 +15,8 @@ class Post extends Model
 
     protected $fillable = [
         'title',
-        'created_at'
+        'created_at',
+        'user_id'
     ];
 
     /**
@@ -32,5 +33,17 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    /**
+     * Remove comment before remove post.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($post) {
+            $post->comments()->delete();
+        });
     }
 }

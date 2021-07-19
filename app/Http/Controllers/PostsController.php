@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PostDestroyRequest;
+use App\Http\Requests\PostStoreRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 
@@ -17,17 +19,8 @@ class PostsController extends Controller
         $posts = Post::all();
         return view('blog', [
             'posts' => $posts,
+            'user' => auth()->user()
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
     }
 
     /**
@@ -36,9 +29,10 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(PostStoreRequest $request)
     {
-        //
+        Post::create(['title' => $request->title, 'user_id' => auth()->user()->id]);
+        return redirect()->route('blog');
     }
 
     /**
@@ -81,8 +75,9 @@ class PostsController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Post $post)
+    public function destroy(PostDestroyRequest $request, Post $post)
     {
-        //
+       $post->delete();
+       return redirect()->route('blog');
     }
 }
