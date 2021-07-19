@@ -14,7 +14,7 @@ class CommentDestroyRequest extends FormRequest
      */
     public function authorize()
     {
-        return auth()->user()->id == $this->comment->user_id;
+        return true;
     }
 
     /**
@@ -25,7 +25,7 @@ class CommentDestroyRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            "comment_id" => "required"
         ];
     }
 }

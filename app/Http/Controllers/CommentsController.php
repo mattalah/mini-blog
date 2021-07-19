@@ -38,7 +38,7 @@ class CommentsController extends Controller
      */
     public function store(CommentStoreRequest $request)
     {
-        auth()->user()->comments(['comment' => $request->comment, 'post_id' => $request->post_id]);
+        Comment::create(['comment' => $request->comment, 'post_id' => $request->post_id, 'user_id' => auth()->user()->id]);
         return redirect()->route('blog');
     }
 
@@ -82,9 +82,14 @@ class CommentsController extends Controller
      * @param  \App\Models\Comment  $comment
      * @return \Illuminate\Http\Response
      */
-    public function destroy(CommentDestroyRequest $request, Comment $comment)
+    public function destroy(CommentDestroyRequest $request)
     {
-       $comment->delete();
-       return redirect()->route('blog');
+        $comment = Comment::where('id', $request->comment_id)->first();
+        if ($comment) {
+            if (auth()->user()->id == $comment->user_id) {
+                $comment->delete();
+                return redirect()->route('blog');
+            }
+        }
     }
 }

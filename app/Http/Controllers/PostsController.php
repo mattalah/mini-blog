@@ -75,9 +75,14 @@ class PostsController extends Controller
      * @param  \App\Models\Post  $post
      * @return \Illuminate\Http\Response
      */
-    public function destroy(PostDestroyRequest $request, Post $post)
+    public function destroy(PostDestroyRequest $request)
     {
-       $post->delete();
-       return redirect()->route('blog');
+        $post = Post::where('id', $request->post_id)->first();
+        if ($post) {
+            if (auth()->user()->id == $post->user_id) {
+                $post->delete();
+                return redirect()->route('blog');
+            }
+        }
     }
 }

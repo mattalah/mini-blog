@@ -24,7 +24,8 @@ class CommentStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'title' => 'required|string'
+            'comment' => 'required|string',
+            'post_id' => 'required'
         ];
     }
 }
